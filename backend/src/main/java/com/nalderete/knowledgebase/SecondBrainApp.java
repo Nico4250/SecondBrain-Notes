@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class KnowledgebaseApplication {
+public class SecondBrainApp {
 
 	public static void main(String[] args) {
-		SpringApplication.run(KnowledgebaseApplication.class, args);
+		SpringApplication.run(SecondBrainApp.class, args);
 	}
 
 }
