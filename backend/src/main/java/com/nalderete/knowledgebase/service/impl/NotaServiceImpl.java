@@ -1,14 +1,14 @@
 package com.nalderete.knowledgebase.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.nalderete.knowledgebase.DAO.NotaDAO;
 import com.nalderete.knowledgebase.model.Nota;
+import com.nalderete.knowledgebase.model.exception.NotaNoEncontradaException;
 import com.nalderete.knowledgebase.service.NotaService;
-
-import org.springframework.stereotype.Service;
 
 @Service
 public class NotaServiceImpl implements NotaService {
@@ -20,18 +20,18 @@ public class NotaServiceImpl implements NotaService {
         return notaDAO.save(nota);
     }
 
+    @Override
     public Nota getNotaById(Long id) {
-        return notaDAO.findById(id).orElse(null); // R
+        return notaDAO.findById(id)
+                .orElseThrow(() -> new NotaNoEncontradaException(id));
     }
 
-    public Nota updateNota(Long id, Nota nota) { // U
-        Nota existingNota = notaDAO.findById(id).orElse(null);
-        if (existingNota != null) {
-            existingNota.setTitulo(nota.getTitulo());
-            existingNota.setContenido(nota.getContenido());
-            return notaDAO.save(existingNota);
-        }
-        return null;
+    @Override
+    public Nota updateNota(Long id, Nota nota) {
+        Nota existente = getNotaById(id);
+        existente.setTitulo(nota.getTitulo());
+        existente.setContenido(nota.getContenido());
+        return notaDAO.save(existente);
     }
 
     public void deleteNota(Long id) { // D

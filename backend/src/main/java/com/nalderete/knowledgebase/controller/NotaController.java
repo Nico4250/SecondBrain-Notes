@@ -1,5 +1,7 @@
 package com.nalderete.knowledgebase.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import java.util.List;
 
 import com.nalderete.knowledgebase.model.Nota;
 import com.nalderete.knowledgebase.service.NotaService;
@@ -29,11 +30,7 @@ public class NotaController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Nota> getNotaById(@PathVariable Long id) {
-        Nota nota = notaService.getNotaById(id);
-        if (nota == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(nota);
+        return ResponseEntity.ok(notaService.getNotaById(id));
     }
 
     @PostMapping
@@ -44,11 +41,7 @@ public class NotaController {
 
     @PutMapping("/{id}")
     public ResponseEntity<Nota> updateNota(@PathVariable Long id, @RequestBody Nota nota) {
-        Nota actualizada = notaService.updateNota(id, nota);
-        if (actualizada == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(actualizada);
+        return ResponseEntity.ok(notaService.updateNota(id, nota));
     }
 
     @DeleteMapping("/{id}")
