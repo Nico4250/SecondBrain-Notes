@@ -1,13 +1,17 @@
-package com.nalderete.knowledgebase.Controller.DTO.response;
+package com.nalderete.knowledgebase.controller.DTO.response;
 
-public record NotaResponse() {
+import com.nalderete.knowledgebase.model.Nota;
 
+import java.time.Instant;
+
+public record NotaResponse(Long id, String titulo, String contenido, Instant fechaCreacion, Instant fechaModificacion) {
     public static NotaResponse desdeModelo(Nota nota) {
         return new NotaResponse(
                 nota.getId(),
                 nota.getTitulo(),
-                nota.getContenido()
+                nota.getContenido(),
+                nota.getFechaCreacion(),
+                nota.getFechaModificacion()
         );
     }
-
 }
