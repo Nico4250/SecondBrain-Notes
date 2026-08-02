@@ -1,4 +1,4 @@
-package com.nalderete.knowledgebase.controller.dto.response;
+package com.nalderete.knowledgebase.controller.DTO.response;
 
 import com.nalderete.knowledgebase.model.Nota;
 

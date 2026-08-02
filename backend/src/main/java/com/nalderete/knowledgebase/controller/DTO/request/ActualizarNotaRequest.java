@@ -1,4 +1,4 @@
-package com.nalderete.knowledgebase.Controller.DTO.request;
+package com.nalderete.knowledgebase.controller.DTO.request;
 
 public record ActualizarNotaRequest(String titulo, String contenido) {
 }

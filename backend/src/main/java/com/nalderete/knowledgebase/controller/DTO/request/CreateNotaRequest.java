@@ -1,6 +1,8 @@
-package com.nalderete.knowledgebase.Controller.DTO.request;
+package com.nalderete.knowledgebase.controller.DTO.request;
 
-public record CreateNotaRequest() {
+import com.nalderete.knowledgebase.model.Nota;
+
+public record CreateNotaRequest(String titulo, String contenido) {
     public Nota aModelo() {
         return new Nota(null, this.titulo, this.contenido);
     }
