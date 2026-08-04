@@ -13,7 +13,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nalderete.knowledgebase.controller.DTO.request.ActualizarNotaRequest;
+import com.nalderete.knowledgebase.controller.DTO.request.CreateNotaRequest;
+import com.nalderete.knowledgebase.controller.DTO.response.NotaResponse;
+import com.nalderete.knowledgebase.model.Carpeta;
 import com.nalderete.knowledgebase.model.Nota;
+import com.nalderete.knowledgebase.service.CarpetaService;
 import com.nalderete.knowledgebase.service.NotaService;
 
 @RestController
@@ -23,30 +28,44 @@ public class NotaController {
     @Autowired
     private NotaService notaService;
 
-    @GetMapping
-    public List<Nota> getAllNotas() {
-        return notaService.getAllNotas();
+    @Autowired
+    private CarpetaService carpetaService;
+
+        @GetMapping
+    public List<NotaResponse> getAllNotas() {
+        return notaService.getAllNotas().stream()
+                .map(NotaResponse::desdeModelo)
+                .toList();
     }
 
+
     @GetMapping("/{id}")
-    public ResponseEntity<Nota> getNotaById(@PathVariable Long id) {
-        return ResponseEntity.ok(notaService.getNotaById(id));
+    public ResponseEntity<NotaResponse> getNotaById(@PathVariable Long id) {
+        return ResponseEntity.ok(NotaResponse.desdeModelo(notaService.getNotaById(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Nota> createNota(@RequestBody Nota nota) {
-        Nota creada = notaService.createNota(nota);
-        return ResponseEntity.status(201).body(creada);
+    public ResponseEntity<NotaResponse> createNota(@RequestBody CreateNotaRequest request) {
+        Carpeta carpeta = resolverCarpeta(request.carpetaId());
+        Nota creada = notaService.createNota(request.aModelo(carpeta));
+        return ResponseEntity.status(201).body(NotaResponse.desdeModelo(creada));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Nota> updateNota(@PathVariable Long id, @RequestBody Nota nota) {
-        return ResponseEntity.ok(notaService.updateNota(id, nota));
+    public ResponseEntity<NotaResponse> updateNota(@PathVariable Long id, @RequestBody ActualizarNotaRequest request) {
+        Carpeta carpeta = resolverCarpeta(request.carpetaId());
+        Nota datos = new Nota(null, request.titulo(), request.contenido(), carpeta);
+        Nota actualizada = notaService.updateNota(id, datos);
+        return ResponseEntity.ok(NotaResponse.desdeModelo(actualizada));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteNota(@PathVariable Long id) {
         notaService.deleteNota(id);
         return ResponseEntity.noContent().build();
+    }
+
+    private Carpeta resolverCarpeta(Long carpetaId) {
+        return carpetaId != null ? carpetaService.getCarpetaById(carpetaId) : null;
     }
 }
