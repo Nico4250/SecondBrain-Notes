@@ -1,20 +1,17 @@
 package com.nalderete.knowledgebase.integracion.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.List;
-
+import com.nalderete.knowledgebase.model.Nota;
+import com.nalderete.knowledgebase.model.exception.NotaNoEncontradaException;
+import com.nalderete.knowledgebase.service.NotaService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import com.nalderete.knowledgebase.model.Nota;
-import com.nalderete.knowledgebase.model.exception.NotaNoEncontradaException;
-import com.nalderete.knowledgebase.service.NotaService;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 public class NotaServiceImplTest {
@@ -29,16 +26,16 @@ public class NotaServiceImplTest {
     void prepare() {
         notaService.deleteAllNotas();
 
-        notaCreada = new Nota(null, "Nota base", "Contenido base");
+        notaCreada = new Nota(null, "Nota base", "Contenido base", null);
         notaService.createNota(notaCreada);
 
-        notaCreada2 = new Nota(null, "Segunda nota", "Otro contenido");
+        notaCreada2 = new Nota(null, "Segunda nota", "Otro contenido", null);
         notaService.createNota(notaCreada2);
     }
 
     @Test
     void crearNotaLeAsignaUnId() {
-        Nota nueva = new Nota(null, "Otra nota", "Excel");
+        Nota nueva = new Nota(null, "Otra nota", "Excel", null);
         notaService.createNota(nueva);
 
         assertNotNull(nueva.getId());
@@ -60,15 +57,16 @@ public class NotaServiceImplTest {
     }
 
     @Test
-void getNotaByIdConIdInexistenteLanzaExcepcion() {
-    assertThrows(NotaNoEncontradaException.class, () -> notaService.getNotaById(999999L));
-}
+    void getNotaByIdConIdInexistenteLanzaExcepcion() {
+        assertThrows(NotaNoEncontradaException.class, () -> notaService.getNotaById(999999L));
+    }
 
     @Test
     void updateNotaActualizaTituloYContenido() {
         Nota actualizada = notaService.updateNota(
                 notaCreada.getId(),
-                new Nota(null, "Modificada", "Contenido modificado"));
+                new Nota(null, "Modificada", "Contenido modificado", null)
+        );
 
         assertEquals("Modificada", actualizada.getTitulo());
         assertEquals("Contenido modificado", actualizada.getContenido());

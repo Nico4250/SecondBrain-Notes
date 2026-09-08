@@ -1,14 +1,9 @@
 package com.nalderete.knowledgebase.unitarios.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.Optional;
+import com.nalderete.knowledgebase.DAO.NotaDAO;
+import com.nalderete.knowledgebase.model.Nota;
+import com.nalderete.knowledgebase.model.exception.NotaNoEncontradaException;
+import com.nalderete.knowledgebase.service.impl.NotaServiceImpl;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,10 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.nalderete.knowledgebase.DAO.NotaDAO;
-import com.nalderete.knowledgebase.model.Nota;
-import com.nalderete.knowledgebase.model.exception.NotaNoEncontradaException;
-import com.nalderete.knowledgebase.service.impl.NotaServiceImpl;
+import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class NotaServiceImplTest {
@@ -35,15 +30,13 @@ class NotaServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        nota = new Nota(1L, "Nota de prueba", "Contenido de prueba");
+        nota = new Nota(1L, "Nota de prueba", "Contenido de prueba", null);
     }
 
     @Test
     void createNotaGuardaYDevuelveLaNota() {
         when(notaDAO.save(nota)).thenReturn(nota);
-
         Nota resultado = notaService.createNota(nota);
-
         assertEquals("Nota de prueba", resultado.getTitulo());
         verify(notaDAO, times(1)).save(nota);
     }
@@ -51,9 +44,7 @@ class NotaServiceImplTest {
     @Test
     void existeUnaNota() {
         when(notaDAO.findById(1L)).thenReturn(Optional.of(nota));
-
         Nota resultado = notaService.getNotaById(1L);
-
         assertNotNull(resultado);
         assertEquals(1L, resultado.getId());
     }
@@ -61,7 +52,6 @@ class NotaServiceImplTest {
     @Test
     void notaQueNoExisteLanzaExcepcion() {
         when(notaDAO.findById(99L)).thenReturn(Optional.empty());
-
         assertThrows(NotaNoEncontradaException.class, () -> notaService.getNotaById(99L));
     }
 
@@ -70,7 +60,7 @@ class NotaServiceImplTest {
         when(notaDAO.findById(1L)).thenReturn(Optional.of(nota));
         when(notaDAO.save(any(Nota.class))).thenAnswer(inv -> inv.getArgument(0));
 
-        Nota nuevosDatos = new Nota(null, "Modificada", "Nuevo contenido");
+        Nota nuevosDatos = new Nota(null, "Modificada", "Nuevo contenido", null);
         Nota resultado = notaService.updateNota(1L, nuevosDatos);
 
         assertEquals("Modificada", resultado.getTitulo());
@@ -80,14 +70,13 @@ class NotaServiceImplTest {
     @Test
     void actualizarNotaQueNoExistelanzaExcepcion() {
         when(notaDAO.findById(99L)).thenReturn(Optional.empty());
-
-        assertThrows(NotaNoEncontradaException.class, () -> notaService.updateNota(99L, new Nota(null, "X", "Y")));
+        assertThrows(NotaNoEncontradaException.class,
+                () -> notaService.updateNota(99L, new Nota(null, "X", "Y", null)));
     }
 
     @Test
     void deleteNotaLllamaAlDAO() {
         notaService.deleteNota(1L);
-
         verify(notaDAO, times(1)).deleteById(1L);
     }
 }

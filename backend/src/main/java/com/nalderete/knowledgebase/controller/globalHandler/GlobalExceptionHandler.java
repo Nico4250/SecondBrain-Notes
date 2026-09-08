@@ -32,6 +32,13 @@ public class GlobalExceptionHandler {
                 .body(e.getMessage());
     }
 
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<String> handleIntegrityViolation() {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body("Ya existe un registro con ese valor único");
+}
+
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleNotReadable(HttpMessageNotReadableException e) {
         return ResponseEntity
