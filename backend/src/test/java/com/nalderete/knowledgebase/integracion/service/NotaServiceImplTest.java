@@ -1,5 +1,6 @@
 package com.nalderete.knowledgebase.integracion.service;
 
+import com.nalderete.knowledgebase.TestcontainersConfiguration;
 import com.nalderete.knowledgebase.model.Nota;
 import com.nalderete.knowledgebase.model.exception.NotaNoEncontradaException;
 import com.nalderete.knowledgebase.service.NotaService;
@@ -8,12 +9,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
+@Import(TestcontainersConfiguration.class)
 public class NotaServiceImplTest {
 
     @Autowired
